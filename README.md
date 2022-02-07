@@ -2,7 +2,7 @@
 Security
 
 
-## LAB2 - Linux command, 2022-02-06
+## LAB2 - Linux command, 2022-02-02
 ```
 # date
 date --date=”4 hours ago”
@@ -33,7 +33,7 @@ readelf -W -s {loc}/date : it shows symbols
 readelf -x 16 {loc}/date : it shows in hexadecimal
 ```
 
-## LAB1 - Linux command, 2022-02-06
+## LAB1 - Linux command, 2022-01-26
 ```
 # Find my machine name
 uname -a
