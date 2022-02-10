@@ -1,24 +1,24 @@
 # Lab2 - Hexa editor, Readelf, start using gdb
 
-# date
+## date
 ```
 date --date=”4 hours ago”
 date --date=”2 years ago” +%Y%m%d
 ```
 
-# md5sum 
+## md5sum 
 * Checksum: “a digit representing the sum of the correct digits in a piece of stored or transmitted digital data, against which later comparisons can be made to detect errors in the data.”
 ```
 [02/10/22]seed@VM:Byeongchan$ md5sum date
 782bfc4c88e6fa1ba4fc29bc980bbfe5  date
 ```
 
-# vimdiff /bin/date my_date
+## vimdiff /bin/date my_date
 ```
 vimdiff /bin/date my_date
 ```
 
-# Objdump
+## Objdump
 * An executable program on Unix-like system. We can use it as a disassembler to view an executable in assembly form.
 
 ```
@@ -36,10 +36,10 @@ objdump -xtrds {loc}/date | less
 ```
 
 
-# hexa editor
+## hexa editor
 * ghex or bless
 
-# readelf
+## readelf
 * What is readelf? readelf is a program for displaying various information about object files on Unix-like systems such as objdump. 
 
 ```
