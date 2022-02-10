@@ -17,10 +17,12 @@ To do that, we need to overwrite the return address of the strcpy function.
 gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
 ```
 * gcc option explanation
+```
 -g : default debug information
 -z execstack : marks the stack as executable
 -fno-stack-protector : disables stack protection
 -o : set output file name
+```
 
 2. Execute below to find out the address we want to jump. As you can see, 0x080485b3 is the address we want to jump!
 ```
