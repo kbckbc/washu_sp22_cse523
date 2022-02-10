@@ -1,5 +1,3 @@
-## LAB3 - Buffer overflow, 2022-02-09
-
 # Simple buffer overflow example
 
 * What are we going to do?
