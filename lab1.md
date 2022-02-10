@@ -1,5 +1,4 @@
-
-## LAB1 - Linux command, 2022-01-26
+## Lab1 - Useful Linux command
 ```
 # Find my machine name
 uname -a
