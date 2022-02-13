@@ -44,7 +44,7 @@ objdump -D ans_check5 | grep -B 1 exit
 
 ## exec with python
 ```
-./ans_check5 $(python -c "print ‘\xAA’*N + ‘\xef\xbe\xad\xde’")
+./ans_check5 $(python -c "print '\xAA'*N + '\xef\xbe\xad\xde'")
 ```
 
 
