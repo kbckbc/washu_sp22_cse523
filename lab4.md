@@ -1,21 +1,29 @@
 ## Buffer overflow with ASLR(random stack aderess)
 
+## !! Some images are from the course lecture files !!
+
 ## Problem
 + Without ASLR, we can find out exact address of the user input.
-+ It's quite easy to find out the address and inject malicious code to that spot, and set return address to it.
 + But, with ASLR, it's really hard to get exact address of the stack. Because it changes whenever executing.
 
 ## Main idea
-+ When calling a function with an user input argument, there should be the input argument in the stack frame. 
-+ If we can found the address of the argument in ths stack, and then we can use it to execute out malicious code.
++ When calling a function with an user input, there should be the input argument in the stack frame. 
++ If we can found the address of the argument in the stack, and then we can use that address to execute our malicious code.
 
 ## Steps
 1. Find out where the break points are. There are two break points. Before calling strcpy and after calling.
 2. Run gdb and set break points.
 3. Run with the random argument you can notice.
-4. Find the input address from the stack using x/72xw $esp.
+4. Find the parameter to check_answer function from the stack using x/72xw $esp.
+5. If you investigate stack frame further, you can find exact same address up in the stack frame. Why? because main function call also resides in the stack and it also has input arguments.(These are argc, argv)
+6. Now, you can caculate how many bytes do we need to overwrite up until the main argv. If we can reach to that point, we may execute main function's argument strings(It is a malicous code)
 
+## 
+![howto3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto3.png)
 
+## 
+![howto1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto1.png)
+![howto2](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto2.png)
 
 
 
