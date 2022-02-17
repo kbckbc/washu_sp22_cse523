@@ -17,6 +17,12 @@
 
 
 
+
+
+objdump -D ans_check6 | less
+objdump -D ans_check6 | grep -B3 ret | grep -A1 pop
+
+
 ## ans_check6.c
 ```
 #include <stdio.h>
@@ -27,8 +33,8 @@ int check_answer(char *ans) {
 
   int ans_flag = 0;
   char ans_buf[34];
-
-  printf("ans_buf is at address %p\n", &ans_buf);
+  printf("check_answer.ans is at address %p\n", ans);
+  printf("check_answer.ans_buf is at address %p\n", &ans_buf);
 
   strcpy(ans_buf, ans);
 
@@ -40,11 +46,15 @@ int check_answer(char *ans) {
 }
 
 int main(int argc, char *argv[]) {
-
+  printf("main:%p\n", main);
+  printf("check_answer:%p\n", check_answer);
   if (argc < 2) {
     printf("Usage: %s <answer>\n", argv[0]);
     exit(0);
   }
+  printf("main.argc is at address %p\n", &argc);
+  printf("main.argv[0] is at address %p\n", argv[0]);
+  printf("main.argv[1] is at address %p\n", argv[1]);
   if (check_answer(argv[1])) {
     printf("Right answer!\n");
   } else {
@@ -53,4 +63,5 @@ int main(int argc, char *argv[]) {
   printf("About to exit!\n");
   fflush(stdout);
 }
+
 ```
