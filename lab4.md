@@ -1,10 +1,10 @@
-## Buffer overflow with ASLR(random stack aderess)
+## Buffer overflow attack(turn on ASLR, turn off NX), 
 
 ## !! Some images are from the course lecture files !!
 
 ## Problem
-+ Without ASLR, we can find out exact address of the user input.
-+ But, with ASLR, it's really hard to get exact address of the stack. Because it changes whenever executing.
++ If ASLR is off, we can find out exact address of the user input.
++ But, with ASLR is on, it's really hard to get exact address of the stack. Because it changes whenever executing.
 
 ## Main idea
 + When calling a function with an user input, there should be the input argument in the stack frame. 
