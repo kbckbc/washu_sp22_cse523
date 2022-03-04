@@ -1,7 +1,7 @@
 # washu_sp22_cse523
 Systems Security course
 
-## Stack 
+## Stack intro 
 ![ppt_intro](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/ppt_intro.png)
 
 ## Table of contents
@@ -20,11 +20,7 @@ Systems Security course
 ![ppt_lab3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/ppt_lab3.png)
 
 
-
-
 * [Lab2](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab2.md) : Hexa editor, Readelf, start using gdb, 2022-02-02
-![lab5_1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/lab5_1.png)
-
 * [Lab1](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab1.md) : Useful Linux command - 2022-01-26
 
 * ASLR is random memeory address of a stack
