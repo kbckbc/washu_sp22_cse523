@@ -59,7 +59,7 @@ objdump -D ans_check6 | grep -B3 ret | grep -A1 pop
 
 
 ## After injecting ret & pop-ret
-![howto3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto5.png)
+![howto5](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto5.png)
 
 
 ## ans_check6.c
