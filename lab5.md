@@ -1,4 +1,4 @@
-## Buffer overflow attack(turn off ASLR, turn off NX)
+# Lab5 - Buffer overflow attack(turn off ASLR, turn off NX)
 
 ## Overview
 * So far, in lab3 & lab4, we did a buffer overflow attack using stack executable.
@@ -6,7 +6,9 @@
 * We injected malicious code in the stack from previous practice, but in this practice, we're going to call system function which is in the libc library.
 * Most programs, including ans_check7, rely on the C standard library, libc. The return-to-libc method we discussed in the lecture explains how we can pass command line arguments to the system() function in the linked libc library to spawn a new shell, without requiring the ability to execute code on the stack.
 * With this senario, we're going to make a payload like below
-* PAYLOAD = PADDING, &system(), &exit_path, &cmd_string
+
+## Payload
+PAYLOAD = PADDING + &system() + &exit_path + &cmd_string
 
 ## Before get started
 + Make sure that the ASLR is turned off.
