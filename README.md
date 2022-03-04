@@ -1,13 +1,30 @@
 # washu_sp22_cse523
 Systems Security course
 
+## Stack 
+![ppt_intro](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/ppt_intro.png)
+
 ## Table of contents
 * [Cheat sheet](https://github.com/kbckbc/washu_sp22_cse523/blob/main/cheatsheet.md) : Tools for hacking
+
 * [Lab5_2](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab5_2.md) : Buffer overflow attack(turn on ASLR, turn on NX), 2022-03-02
+![ppt_lab5_2](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/ppt_lab5_2.png)
+
 * [Lab5](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab5.md) : Buffer overflow attack(turn off ASLR, turn on NX), 2022-02-23
+![ppt_lab5](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/ppt_lab5.png)
+
 * [Lab4](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab4.md) : Buffer overflow attack(turn on  ASLR, turn off NX), 2022-02-16
+![ppt_lab4](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/ppt_lab4.png)
+
 * [Lab3](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab3.md) : Buffer overflow attack(turn off ASLR, turn off NX), 2022-02-09
+![ppt_lab3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/ppt_lab3.png)
+
+
+
+
 * [Lab2](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab2.md) : Hexa editor, Readelf, start using gdb, 2022-02-02
+![lab5_1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/lab5_1.png)
+
 * [Lab1](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab1.md) : Useful Linux command - 2022-01-26
 
 * ASLR is random memeory address of a stack
