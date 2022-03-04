@@ -31,6 +31,10 @@ cat /proc/sys/kernel/randomize_va_space
 7. In the image below, we are going to overwrite from Number 1 to Number 5. But What are we going to write?
 8. Overwrite the address of 'ret' and 'pop-ret' instruction up until the second address! About finding out the address of 'ret' and 'pop-ret' is explained below
 
+## Figure out how many bytes do we need to fill up
+![howto3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto3.png)
+
+
 ## What is 'ret' and 'pop-ret'
 + 'ret' pops up the top of the stack and shrink the stack point(esp)
 + 'pop-ret' is similar to 'ret' and it pops one more time. 
@@ -39,8 +43,6 @@ cat /proc/sys/kernel/randomize_va_space
 objdump -D ans_check6 | less
 objdump -D ans_check6 | grep -B3 ret | grep -A1 pop
 ```
-## Figure out how many bytes do we need to fill up
-![howto3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto3.png)
 
 ## The payload I use
 ```
