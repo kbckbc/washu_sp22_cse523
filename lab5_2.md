@@ -107,7 +107,7 @@ Key to Flags:
   O (extra OS processing required) o (OS specific), p (processor specific)
 ```
 
-### Step7 - Find out where hexacode of strings are.(We're using them to build our own command)
+### Step7 - Find out where hexacodes are
 + We're going to build '/bin/bash' string.
 + In our program, there are a lot of same string already.
 + Find out the addresses of the hexacodes below.
@@ -150,14 +150,16 @@ h	68	src_byte_addr_9	0x080bbf53, \x53\xbf\x0b\x08
 ### Step8 - Build the command text we're using
 + How to build the string?
 + Using strcpy in Libc library and we already found the address of strcpy function
-+ If we put '&strcpy | &pop-pop-ret | str_loc_1 | src_byte_addr_1' into the return addres, we can make strcpy called.
-+ Before move on, make sure to understand below
++ If we put below in the position of return address, we can copy a text into a new address
 ```
-&strcpy : Jump to this address to exploit this string copy function.
-&pop-pop-ret : It is needed to proceed to the next strcpy function. After executing strcpy function, it also look up returns address to execute next command. However, we put the address of pop-pop-ret, so the system calls pop-pop-ret function. And then, it pops the stack value twice and return and then, there is the place for address of another strcpy function.
-str_loc_1 : The target address where ‘open the shell code command’ resides.
-str_byte_addr_1 : The ascii code we want to copy.
+&strcpy | &pop-pop-ret | str_loc_1 | src_byte_addr_1
 ```
++ Before move on, make sure to each part of above
++ &strcpy : Jump to this address to exploit this string copy function.
++ &pop-pop-ret : It is needed to proceed to the next strcpy function. After executing strcpy function, it also look up returns address to execute next command. However, we put the address of pop-pop-ret, so the system calls pop-pop-ret function. And then, it pops the stack value twice and return and then, there is the place for address of another strcpy function.
++ str_loc_1 : dest, The target address where ‘open the shell code command’ resides.
++ str_byte_addr_1 : src, The ascii code we want to copy.
+
 
 ### Step9 - Make the payload and execute
 + The payload I made is shown below
@@ -204,6 +206,7 @@ exit,       \x93\xcf\x06\x08
 cmd_string, \x91\xbf\x0e\x08
 ```
 
++ Below is what I did to get a new shell
 ```
 [03/02/22]seed@VM:Byeongchan$ echo $$
 2658
