@@ -2,15 +2,13 @@
 
 ## !! Some images are from the course lecture files !!
 
-## Problem
+## Overview
 + If ASLR is off, we can find out exact address of the user input.
 + But, with ASLR is on, it's really hard to get exact address of the stack. Because it changes whenever executing.
-
-## Main idea
 + When calling a function with an user input, there should be the input argument in the stack frame. 
 + If we can found the address of the argument in the stack, and then we can use that address to execute our malicious code.
 
-## Setup
+## Before get started
 + First, compile the source at the bottom of this page like below.
 ```
 gcc -g -m32 -z execstack -fno-stack-protector ans_check6.c -o ans_check6
@@ -19,7 +17,6 @@ gcc -g -m32 -z execstack -fno-stack-protector ans_check6.c -o ans_check6
 ```
 cat /proc/sys/kernel/randomize_va_space
 ```
-
 
 ## Steps
 1. Find out where the break points are. There are two break points. Before calling strcpy and after calling.(line number 12 and 14)
