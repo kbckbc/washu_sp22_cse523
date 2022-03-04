@@ -8,6 +8,9 @@
 + When calling a function with an user input, there should be the input argument in the stack frame. 
 + If we can found the address of the argument in the stack, and then we can use that address to execute our malicious code.
 
+## Payload
+Payload = shellcode + alignment + &ret*N + &pop-ret
+
 ## Before get started
 + First, compile the source at the bottom of this page like below.
 ```
