@@ -23,12 +23,12 @@ gcc -g -static -fno-stack-protector ans_check7.c -o ans_check7_static
 ```
 
 ## Steps
-1,2,3,4 - Have done on previous lab
-5. Find out the address of the strcpy & pop-pop-ret function
-6. Choose an address for our string destination
-7. Find out where hexacode of strings are.(We're using them to build our own command)
-8. Build the command text we're using
-9. Make the payload and execute
++ 1,2,3,4 - Have done on previous lab
++ 5. Find out the address of the strcpy & pop-pop-ret function
++ 6. Choose an address for our string destination
++ 7. Find out where hexacode of strings are.(We're using them to build our own command)
++ 8. Build the command text we're using
++ 9. Make the payload and execute
 
 ### Step5 - Find out the address of the strcpy & pop-pop-ret function
 + I found the 54 bytes are needed for the padding using exit function
