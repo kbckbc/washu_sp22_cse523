@@ -4,6 +4,9 @@
 This example shows how to find the return address location of strcpy using buffer overflow.
 After finding out where it is, overwrite the return address with a address where we want to jump(What if the jump address is a program getting a shell!!)
 
+## PAYLOAD
+Payload = Aligned Shellcode + Safe padding + BUFFER_START_ADDRESS
+ 
 ## Steps
 1. Set an address you want to jump. In this example, we just want to find out the address where the program exit immediately. Later on, this address will be the address you want to execute!!
 2. Find where the strcpy return address is.(It's a brute force method)
@@ -79,7 +82,7 @@ ans_buf is at address 0xbf97bbdc
 ```
 
 ## Step4. Make a payload. 
-  + ‘PAYLOAD’ = '<Aligned Shellcode>'+<Safe padding>+'<BUFFER_START_ADDRESS>'
+  + PAYLOAD = <Aligned Shellcode> + <Safe padding>+<BUFFER_START_ADDRESS>
   + Shellcode: It's a execution of /bin/sh and hexacoded.
   + Safe padding: Need it to reach the return address location
   + BUFFER_START_ADDRESS: Address of a target program. In this case, the start address of 'Aligned Shellcode'
