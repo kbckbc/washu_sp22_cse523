@@ -216,6 +216,6 @@ exit
 2658
 [03/02/22]seed@VM:Byeongchan$
 ```
-![lab5_1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/lab5_1.png)
+![lab5_2](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/lab5_2.png)
 
 
