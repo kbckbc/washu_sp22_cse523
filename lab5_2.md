@@ -1,25 +1,19 @@
 ## Buffer overflow attack(turn on ASLR, turn off NX)
 
 ## Overview
-* So far, in lab3 & lab4, we did a buffer overflow attack using stack executable.
-* But it's not the case in real situation. Linux systems usually make it impossible to run programs from stack memory.
-* We injected malicious code in the stack from previous practice, but in this practice, we're going to call system function which is in the libc library.
-* Most programs, including ans_check7, rely on the C standard library, libc. The return-to-libc method we discussed in the lecture explains how we can pass command line arguments to the system() function in the linked libc library to spawn a new shell, without requiring the ability to execute code on the stack.
-* With this senario, we're going to make a payload like below
+* Previous lab, we use '/bin/sh' string in a environment in linux system. 
+* This time, we're going to make '/bin/sh' string into a memory using strcpy and jump to the text!!!
+* I think this is really cool and I truly admire who though these kind of things.
 
 ## PAYLOAD
 + Payload = PADDING + build-string-payload + &system() + &exit_path + &cmd_string
-+ Note that this time, we're building our own string!
++ Note that, this time, we're building our own string!
 
 ## Before get started
 + Make sure that the ASLR is turned off.
 ```
 [02/23/22]seed@VM:Byeongchan$ cat /proc/sys/kernel/randomize_va_space 
 2
-[02/23/22]seed@VM:Byeongchan$ echo 0 | sudo tee /proc/sys/kernel/randomize_va_space
-0
-[02/23/22]seed@VM:Byeongchan$ cat /proc/sys/kernel/randomize_va_space 
-0
 [02/23/22]seed@VM:Byeongchan$
 
 ```
