@@ -29,8 +29,6 @@ cat /proc/sys/kernel/randomize_va_space
 5. If you investigate stack frame further, you can find exact same address upper portion in the stack frame. Why? because main function call also resides in the stack frame and it also has input arguments.(These are argc, argv)
 6. Now, you can caculate how many bytes do we need to overwrite up until the main argv. If we can reach to that point, we may execute main function's argument strings(It is a malicous code)
 7. In the image below, we are going to overwrite from Number 1 to Number 5. But What are we going to write?
-### Figure out how many bytes do we need to fill up
-![howto3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto3.png)
 8. Overwrite the address of 'ret' and 'pop-ret' instruction up until the second address! About finding out the address of 'ret' and 'pop-ret' is explained below
 
 ## What is 'ret' and 'pop-ret'
@@ -41,6 +39,8 @@ cat /proc/sys/kernel/randomize_va_space
 objdump -D ans_check6 | less
 objdump -D ans_check6 | grep -B3 ret | grep -A1 pop
 ```
+## Figure out how many bytes do we need to fill up
+![howto3](https://raw.githubusercontent.com/kbckbc/washu_sp22_cse523/main/img/howto3.png)
 
 ## The payload I use
 ```
