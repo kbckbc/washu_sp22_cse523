@@ -12,7 +12,7 @@
 * [Lab2](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab2.md) : Hexa editor, Readelf, start using gdb, 2022-02-02
 * [Lab1](https://github.com/kbckbc/washu_sp22_cse523/blob/main/lab1.md) : Useful Linux command - 2022-01-26
 
-* ASLR is random memeory address of a stack
+* ASLR is random memory address of a stack
   + on - random address for a stack
   + off - same address for a stack
 * NX is stack executable
