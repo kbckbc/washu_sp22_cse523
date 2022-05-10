@@ -1,7 +1,8 @@
 # washu_sp22_cse523
 + Systems Security course
-+ Buffer overflow attack
-
++ This course is mainly about Buffer overflow attack
++ I've made notes for future lookup and posted labs and homeworks document in the 'homeworks' directory
++ Please don't just copy these solutions and use them as a guide to your work. I wish you to learn something from courses at WashU.
 
 ## Table of contents
 * [Cheat sheet](https://github.com/kbckbc/washu_sp22_cse523/blob/main/cheatsheet.md) : Tools for hacking
